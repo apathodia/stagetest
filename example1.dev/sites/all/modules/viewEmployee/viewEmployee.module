@@ -1,0 +1,92 @@
+<?php
+
+function viewEmployee_menu() {
+  $items['employee/view'] = array(
+    'title' => 'View Employees',
+    'page callback' => 'viewEmployee_page',
+    'access callback' => TRUE,
+  );
+  return $items;
+}
+
+/**
+ * Returns form render array.
+ */
+/*function viewEmployee_form($form, &$form_state) {	
+	
+   $result = db_query("SELECT id, name, email FROM {employee}");
+   drupal_set_message('hi');    
+   
+   $form['things'] = array(
+	  '#prefix' => '<div id="things">',
+	  '#suffix' => '</div>',
+	  '#tree' => TRUE,
+	  '#theme' => 'viewEmployee_textfield_table',
+	);
+
+	foreach ($result as $field_name) {
+	drupal_set_message('hello');
+	  $form['things'][] = array(
+	    '#type' => 'textfield',
+	    '#default_value' => $field_name->name,
+	    '#extra_data' => array('field_name' => $field_name),
+	  );
+	}
+	return $form;
+}*/
+
+function viewEmployee_form($form, &$form_state) {
+	$result = db_query("SELECT id, name, email FROM {employee}");
+
+ 
+  $header = array
+  (
+    'name' => t('Name'),
+    'email' => t('Email'),
+  );
+  $options = array();
+  foreach($result as $record)
+  {
+    $options[$record->id] =array
+    (
+      'name' => $record->name,
+      'email' => $record->email,
+    );
+  }
+  $form['table'] = array
+  (
+    '#type' => 'tableselect',
+    '#header' => $header,
+    '#options' => $options,
+    '#empty' => t('No users found'),
+    '#multiple' => FALSE,
+  );
+  $form['submit'] = array
+  (
+    '#type' => 'submit',
+    '#value' => t('Edit'),
+  );
+  return $form;
+}
+
+
+function viewEmployee_form_submit($form, &$form_state) {
+//drupal_set_message($form_state['values']['table']);
+$form_state1['redirect'] = array(
+  'employee/create',
+  array(
+    'query' => array(
+      'id' => $form_state['values']['table'],
+    ),
+  ),
+);
+ return drupal_redirect_form($form_state1);
+   
+    
+}
+/**
+ * Menu callback.
+ */
+function viewEmployee_page() {
+  return drupal_get_form('viewEmployee_form');
+}

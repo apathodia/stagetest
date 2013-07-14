@@ -1,0 +1,4 @@
+name = View Employee
+description = "Allows users to view employees."
+package = viewEmployee
+core = 7.x

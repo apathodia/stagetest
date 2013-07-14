@@ -1,0 +1,4 @@
+name = Employee
+description = "Allows users to create employees."
+package = Employee
+core = 7.x
